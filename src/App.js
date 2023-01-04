@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { Loader, Table } from "components"; //using src as base url for imports
+import data from "utils/data.json";
+import { useMemo } from "react";
+
+const titleStyle = {
+  textAlign: "center",
+};
 
 function App() {
+  //improve performance by using useMemo hook, caching a value so that it does not need to be recalculated
+  const tableData = useMemo(() => {
+    const res = data.data.map((item) => Object.values(item));
+    return res;
+  }, [data]);
+
+  const tableColumns = useMemo(() => {
+    const columns = Object.keys(data.data[0]);
+    return columns;
+  }, [data]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1 style={titleStyle}>{data?.title}</h1>
+      {tableData ? ( //improve ux bu showing loading when data loading
+        <Table data={tableData} columns={tableColumns} />
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 }
 
